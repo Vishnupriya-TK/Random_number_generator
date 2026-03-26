@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Random Number Generator</title>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+/* Phones */
+@media (max-width: 640px) {
+  .number-card {
+    width: 120px;
+    height: 120px;
+  }
+  .number-text {
+    font-size: 1.5rem;
+  }
+  .button-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .pair-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+</style>
+</head>
+
+<body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen flex items-center justify-center">
+
+<div class="text-center space-y-8 p-6">
+
+  <h1 class="text-3xl font-bold text-white">🎲 Random Picker</h1>
+
+  <!-- Generate Both -->
+  <button onclick="generateBoth()"
+    class="bg-white text-indigo-600 font-semibold px-8 py-2 rounded-xl shadow-lg hover:scale-105 transition">
+    Generate Both
+  </button>
+
+  <!-- Cards -->
+  <div class="flex gap-10 justify-center pair-row">
+
+    <!-- Girls -->
+    <div class="backdrop-blur-lg bg-white/30 border border-white/20 shadow-xl rounded-2xl w-40 h-40 flex flex-col items-center justify-center number-card">
+      <h2 class="text-white font-semibold">Girls</h2>
+      <span id="girlsNumber" class="text-3xl font-bold mt-2 text-white number-text">--</span>
+    </div>
+
+    <!-- Boys -->
+    <div class="backdrop-blur-lg bg-white/30 border border-white/20 shadow-xl rounded-2xl w-40 h-40 flex flex-col items-center justify-center number-card">
+      <h2 class="text-white font-semibold">Boys</h2>
+      <span id="boysNumber" class="text-3xl font-bold mt-2 text-white number-text">--</span>
+    </div>
+
+  </div>
+
+  <!-- Buttons -->
+  <div class="flex gap-6 justify-center button-row">
+
+    <button onclick="generateGirls()"
+      class="bg-pink-500 text-white px-6 py-2 rounded-xl shadow hover:bg-pink-600 hover:scale-105 transition">
+      Generate Girl
+    </button>
+
+    <button onclick="generateBoys()"
+      class="bg-blue-500 text-white px-6 py-2 rounded-xl shadow hover:bg-blue-600 hover:scale-105 transition">
+      Generate Boy
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+const girlsPool = Array.from({ length: 30 }, (_, i) =>
+  String(i + 1).padStart(2, '0')
+);
+
+const boysPool = [
+  ...Array.from({ length: 31 }, (_, i) => String(i + 31)),
+  "L01", "L02", "L03", "L04"
+];
+
+let lastGirl = null;
+let lastBoy = null;
+
+function randomFrom(pool, lastValue) {
+  if (pool.length === 1) return pool[0];
+
+  let value;
+  do {
+    value = pool[Math.floor(Math.random() * pool.length)];
+  } while (value === lastValue);
+
+  return value;
+}
+
+function flash(el) {
+  el.classList.add("scale-125");
+  setTimeout(() => el.classList.remove("scale-125"), 150);
+}
+
+function animateNumber(elementId, finalValue, pool) {
+  const el = document.getElementById(elementId);
+  let counter = 0;
+
+  const interval = setInterval(() => {
+    el.innerText = pool[Math.floor(Math.random() * pool.length)];
+    counter++;
+
+    if (counter > 12) {
+      clearInterval(interval);
+      el.innerText = finalValue;
+      flash(el);
+    }
+  }, 40);
+}
+
+function generateGirls() {
+  const girl = randomFrom(girlsPool, lastGirl);
+  lastGirl = girl;
+  animateNumber("girlsNumber", girl, girlsPool);
+}
+
+function generateBoys() {
+  const boy = randomFrom(boysPool, lastBoy);
+  lastBoy = boy;
+  animateNumber("boysNumber", boy, boysPool);
+}
+
+function generateBoth() {
+  const girl = randomFrom(girlsPool, lastGirl);
+  const boy = randomFrom(boysPool, lastBoy);
+
+  lastGirl = girl;
+  lastBoy = boy;
+
+  animateNumber("girlsNumber", girl, girlsPool);
+  animateNumber("boysNumber", boy, boysPool);
+}
+</script>
+
+</body>
+</html>
