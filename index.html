@@ -76,12 +76,12 @@
 <script>
 const girlsPool = Array.from({ length: 30 }, (_, i) =>
   String(i + 1).padStart(2, '0')
-);
+).filter(num => num !== "15"); // removed 15
 
 const boysPool = [
   ...Array.from({ length: 31 }, (_, i) => String(i + 31)),
   "L01", "L02", "L03", "L04"
-];
+].filter(num => num !== "47"); // removed 47
 
 let lastGirl = null;
 let lastBoy = null;
